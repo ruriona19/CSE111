@@ -11,7 +11,8 @@ def main():
     steel_can_sizes = get_list_of_can_sizes('steel_can_sizes.csv')
     name_index = 0
     radius_index = 1
-    height_index = 2    
+    height_index = 2 
+       
 
     for steel_can_size in steel_can_sizes:
         name = steel_can_size[name_index]
