@@ -20,16 +20,16 @@ def main():
     
     # Draw the sky and all the objects in the sky.
     draw_sky(canvas, scene_width, scene_height)
-    draw_sun(canvas)
-    draw_clouds(canvas)
-    draw_birds(canvas)
+    draw_sun(canvas, "yellow")
+    draw_clouds(canvas, "white")
+    draw_birds(canvas, "blue")
                 
     # Draw the mountains
-    draw_mountains(canvas)        
+    draw_mountains(canvas, "slateGray")        
 
     # Draw the ground and all the objects on the ground.
     draw_ground(canvas, scene_width, scene_height)
-    draw_lake(canvas)
+    draw_lake(canvas, "deepSkyBlue")
     draw_forest(canvas)    
 
     # Call the finish_drawing function in the draw2d.py library.
@@ -45,65 +45,70 @@ def draw_sky(canvas, scene_width, scene_height):
     """   
     draw2d.draw_rectangle(canvas, 0, scene_height / 3, scene_width, scene_height, width=0, fill="sky blue")
 
-def draw_sun(canvas):
+def draw_sun(canvas, color):
     """Draw the sun in a random location over the sky
     Parameters
-        canvas: The new canvas where this program can draw 2-dimensional shapes.        
+        canvas: The new canvas where this program can draw 2-dimensional shapes.
+        color: The color of the sun.
     Return: Nothing.
     """   
     x = random.randrange(50, 900)
     y = random.randrange(400, 500)  
-    draw2d.draw_oval(canvas, x, y, x + 100, y + 100, fill="yellow")
+    draw2d.draw_oval(canvas, x, y, x + 100, y + 100, fill=color)
 
-def draw_clouds(canvas):
+def draw_clouds(canvas, color):
     """Draw clouds in a random location over the sky
     Parameters
-        canvas: The new canvas where this program can draw 2-dimensional shapes.        
+        canvas: The new canvas where this program can draw 2-dimensional shapes.
+        color: The color of the clouds        
     Return: Nothing.
     """       
-    draw_cloud(canvas, 100)
-    draw_cloud(canvas, 20)
-    draw_cloud(canvas, 100)
+    draw_cloud(canvas, 100, color)
+    draw_cloud(canvas, 20, color)
+    draw_cloud(canvas, 100, color)
 
-def draw_birds(canvas):
+def draw_birds(canvas, color):
     """Draw birds in a random location over the sky
     Parameters
-        canvas: The new canvas where this program can draw 2-dimensional shapes.        
+        canvas: The new canvas where this program can draw 2-dimensional shapes.
+        color: The color of the birds
     Return: Nothing.
     """       
-    draw_bird(canvas, 0)
-    draw_bird(canvas, 40)
-    draw_bird(canvas, -30)
-    draw_bird(canvas, 0)
-    draw_bird(canvas,-50)
-    draw_bird(canvas, -40)
+    draw_bird(canvas, 0, color)
+    draw_bird(canvas, 40, color)
+    draw_bird(canvas, -30, color)
+    draw_bird(canvas, 0, color)
+    draw_bird(canvas,-50, color)
+    draw_bird(canvas, -40, color)
 
 
 def draw_ground(canvas, scene_width, scene_height):
     """Draw the ground."""
     draw2d.draw_rectangle(canvas, 0, 0,scene_width, scene_height / 3, width=0, fill="green")
 
-def draw_mountains(canvas):
+def draw_mountains(canvas, color):
     """Draw the mountains.
     Parameters
-        canvas: The new canvas where this program can draw 2-dimensional shapes.        
+        canvas: The new canvas where this program can draw 2-dimensional shapes.
+        color: The color of the mountains
     Return: Nothing.
     """       
-    draw_mountain(canvas, 0, 0)
-    draw_mountain(canvas, 200, 30)
-    draw_mountain(canvas, 550, 35)
-    draw_mountain(canvas, 750, 15)
-    draw_mountain(canvas, 350, 50)
+    draw_mountain(canvas, 0, 0, color)
+    draw_mountain(canvas, 200, 30, color)
+    draw_mountain(canvas, 550, 35, color)
+    draw_mountain(canvas, 750, 15, color)
+    draw_mountain(canvas, 350, 50, color)
 
-def draw_lake(canvas):
+def draw_lake(canvas, color):
     """Draw the lake.
     Parameters
         canvas: The new canvas where this program can draw 2-dimensional shapes.        
+        color: The color of the lake.
     Return: Nothing.
     """
-    draw2d.draw_oval(canvas, 450, 50, 850, 180, outline="deepSkyBlue", fill="deepSkyBlue")
-    draw2d.draw_oval(canvas, 650, 30, 1050, 150, outline="deepSkyBlue", fill="deepSkyBlue")
-    draw2d.draw_oval(canvas, 650, 95, 950, 195, outline="deepSkyBlue", fill="deepSkyBlue")
+    draw2d.draw_oval(canvas, 450, 50, 850, 180, outline=color, fill=color)
+    draw2d.draw_oval(canvas, 650, 30, 1050, 150, outline=color, fill=color)
+    draw2d.draw_oval(canvas, 650, 95, 950, 195, outline=color, fill=color)
        
 def draw_forest(canvas):
     """Draw the forest.
@@ -166,41 +171,42 @@ def draw_pine_tree(canvas, center_x, bottom, height):
             skirt_left, trunk_top,
             outline="gray20", width=1, fill="dark green")
     
-def draw_cloud(canvas, startY):
+def draw_cloud(canvas, startY, color):
     """Draw a cloud in a random location in the sky.
     Parameters
         canvas: The canvas where this function will draw a cloud.
-        startY: The y location in pixels where
-            this function will start drawing the cloud.        
+        startY: The y location in pixels where this function will start drawing the cloud.
+        color: THe color of the cloud.
     Return: nothing
     """
     # The start x location where this function will start drawing the cloud.
     startX = random.randrange(100, 800) 
-    draw2d.draw_oval(canvas, startX + 100, startY + 480, startX + 240, startY + 400, outline="white", fill="white")
-    draw2d.draw_oval(canvas, startX + 130, startY + 430, startX + 280, startY + 400, outline="white", fill="white")
-    draw2d.draw_oval(canvas, startX + 40, startY + 490, startX + 150, startY + 430, outline="white", fill="white")
+    draw2d.draw_oval(canvas, startX + 100, startY + 480, startX + 240, startY + 400, outline=color, fill=color)
+    draw2d.draw_oval(canvas, startX + 130, startY + 430, startX + 280, startY + 400, outline=color, fill=color)
+    draw2d.draw_oval(canvas, startX + 40, startY + 490, startX + 150, startY + 430, outline=color, fill=color)
 
-def draw_bird(canvas, startY):
+def draw_bird(canvas, startY, color):
     """Draw a bird in a random location in the sky.
     Parameters
         canvas: The canvas where this function will draw a bird.
-        startY: The y location in pixels where
-            this function will start drawing a bird.        
+        startY: The y location in pixels where this function will start drawing a bird.
+        color: The color of the bird
     Return: nothing
     """
     startX = random.randrange(0, 800)
-    draw2d.draw_arc(canvas, 50 + startX, 450 + startY, 100 + startX, 550 + startY, start=50, extent=70, width=3)  
-    draw2d.draw_arc(canvas, 75 + startX, 450 + startY, 125 + startX, 550 + startY, start=50, extent=70, width=3)
+    draw2d.draw_arc(canvas, 50 + startX, 450 + startY, 100 + startX, 550 + startY, start=50, extent=70, width=3, outline=color)  
+    draw2d.draw_arc(canvas, 75 + startX, 450 + startY, 125 + startX, 550 + startY, start=50, extent=70, width=3, outline=color)
 
-def draw_mountain(canvas, startX, startY):
+def draw_mountain(canvas, startX, startY, color):
     """Draw a bird in a random location in the sky.
     Parameters
         canvas: The canvas where this function will draw a mountain.
         startX: The x location in pixels where this function will start drawing a mountain.
-        startY: The y location in pixels where this function will start drawing a mountain.        
+        startY: The y location in pixels where this function will start drawing a mountain.
+        color: The color of the mountain        
     Return: nothing
     """
-    draw2d.draw_polygon(canvas, startX + 0, 200, startX + 100, startY + 300, startX + 200, startY + 300, startX + 300, 200, fill="slateGray")
+    draw2d.draw_polygon(canvas, startX + 0, 200, startX + 100, startY + 300, startX + 200, startY + 300, startX + 300, 200, fill=color)
     draw2d.draw_polygon(canvas, startX + 100, startY + 300, startX + 140, startY + 340, startX + 148, startY + 345, startX + 152, startY + 345, startX + 160, startY + 340, startX + 200, startY + 300, fill="white")
 
 
