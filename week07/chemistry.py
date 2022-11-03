@@ -2,32 +2,27 @@
 Demonstrate that numbers are passed to a function by value
 and lists are passed to a function by reference.
 """
-import random
+import json
 import csv
 
 def main():
     print("main()")
     periodic_table_list = make_periodic_table()
-    periodic_table_list.index
-    for element in periodic_table_list:
-        print(f'{element[1]}  {element[2]}')
+              
+    print('# symbol: [name, atomic_mass]')              
+    for item in periodic_table_list.items():
+        key = item[0]
+        value = item[1]        
+        print(f'{key}: {value}')            
 
 
-def make_periodic_table():     
-    filename = 'table_of_elements.csv'
-    periodic_table_list = []
+def make_periodic_table():         
+    filename = 'table_of_elements.json'
 
-
-    with open(filename) as table_of_elemnts_file:
-        csvreader = csv.reader(table_of_elemnts_file)
-        next(csvreader)
-            
-        for element in csvreader:
-            atomicMass = element[2]
-            element[2] = float(atomicMass)
-            periodic_table_list.append(element)
+    with open(filename) as json_file:
+        periodic_table_list = json.load(json_file)
+                  
     return periodic_table_list
-
 
 
 # If this file was executed like this:
