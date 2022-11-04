@@ -1,7 +1,12 @@
 """
-Demonstrate that numbers are passed to a function by value
-and lists are passed to a function by reference.
+File: chemistry.py
+Author: Roberto Uriona
+Purpose: Write and test a molar mass calculator.
+Related files: 
+-- test_chemistry_2.py
+-- table_of_elements.json: This file is used to read the elements from a json file.
 """
+
 import json
 
 class FormulaError(ValueError):
@@ -12,32 +17,32 @@ class FormulaError(ValueError):
 def main():
     
     # Get a chemical formula for a molecule from the user.
-    molecular_formula = 'C13H18O2'
+    molecular_formula = input("Enter the molecular formula of the sample:")
 
     # Get the mass of a chemical sample in grams from the user.
-    mass_in_gr = '5.04'
+    sample_mass = float(input("Enter the mass in grams of the sample:"))
 
     # Call the make_periodic_table function and
     # store the periodic table in a variable.
-    periodic_table_dict = make_periodic_table()
-              
-    print('# symbol: [name, atomic_mass]')              
-    for item in periodic_table_dict.items():
-        key = item[0]
-        value = item[1]        
-        print(f'{key}: {value}')  
+    periodic_table_dict = make_periodic_table()              
 
     # Call the parse_formula function to convert the
     # chemical formula given by the user to a compound
     # list that stores element symbols and the quantity
     # of atoms of each element in the molecule.
-    compound_list = parse_formula(molecular_formula, periodic_table_dict)
-    print(f'compound list:{compound_list}')
+    compound_list = parse_formula(molecular_formula, periodic_table_dict)    
 
     # Call the compute_molar_mass function to compute the
     # molar mass of the molecule from the compound list.
-    compute_molar_mass(compound_list, periodic_table_dict)
+    molar_mass = compute_molar_mass(compound_list, periodic_table_dict)
 
+    # Compute the number of moles in the sample.
+    number_of_moles = sample_mass/molar_mass
+
+    # Print the molar mass.
+    print(f'{molar_mass:.5f} grams/mole')
+    # Print the number of moles.
+    print(f'{number_of_moles:.5f} moles')
 
 def make_periodic_table():         
     filename = 'table_of_elements.json'
@@ -139,7 +144,13 @@ def parse_formula(formula, periodic_table_dict):
     elem_dict, _ = parse_r(formula, 0, 0)
     return list(elem_dict.items())
 
+# Indexes for inner lists in the periodic table
+NAME_INDEX = 0
+ATOMIC_MASS_INDEX = 1
 
+# Indexes for inner lists in a symbol_quantity_list
+SYMBOL_INDEX = 0
+QUANTITY_INDEX = 1
 def compute_molar_mass(symbol_quantity_list, periodic_table_dict):
     """Compute and return the total molar mass of all the
     elements listed in symbol_quantity_list.
@@ -168,7 +179,16 @@ def compute_molar_mass(symbol_quantity_list, periodic_table_dict):
         # Add the product into the total molar mass.
 
     # Return the total molar mass.
-    return
+    symbol = ''
+    quantity = ''
+    total_molar_mass = 0
+  
+    for i in symbol_quantity_list:
+        symbol = i[SYMBOL_INDEX]
+        quantity = float(i[QUANTITY_INDEX])
+        atomic_mass = float(periodic_table_dict[symbol][ATOMIC_MASS_INDEX])
+        total_molar_mass += atomic_mass* quantity
+    return total_molar_mass
 
 
 
