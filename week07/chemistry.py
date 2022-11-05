@@ -64,12 +64,14 @@ def main():
     # Print the number of moles.
     print(f'{number_of_moles:.5f} moles')
 
-    print()
-    formula = input("Enter a chemical formula to verify if it is present in know_molecules_dict:")
+
     # Exceeding the Requirements
     # Call the get_formula_name function from your main function and print
     # the compound name for the user to see with the other output.
-    get_formula_name(formula, known_molecules_dict)
+    print()
+    formula = input("Enter a chemical formula to verify if it is present in know_molecules_dict:")    
+    formuma_name = get_formula_name(formula, known_molecules_dict)    
+    print(f'Name of the chemical formula: {formuma_name}')    
 
 def make_periodic_table():         
     filename = 'table_of_elements.json'
@@ -232,9 +234,9 @@ def get_formula_name(formula, known_molecules_dict):
     """
 
     if known_molecules_dict.get(formula) is not None:
-        print(f'Name of the chemical formula: {known_molecules_dict[formula]}')
+        return known_molecules_dict[formula]
     else:
-        print (f'Unknown compound')
+        return 'Unknown compound'
 
 
 
