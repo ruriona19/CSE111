@@ -1,137 +1,137 @@
-#Import Necessary modules
+import tkinter as tk
 import sqlite3 as sql
 from datetime import date
-from tkinter import *
 from tkinter import messagebox
 
-# Create database connection and connect to table
-try:
-       con = sql.connect('pin_your_note.db')
-       cur = con.cursor()
-       cur.execute('''CREATE TABLE notes_table
+def main():
+    
+    createDB()
+    create_table()
+
+    # Create the Tk root object.    
+    root = tk.Tk()
+
+    # Create the main window. In tkinter,
+    # a window is also called a frame.
+    frm_main = tk.Frame(root)
+    frm_main.master.title("Pin Your Note")
+    frm_main.pack(padx=4, pady=3, fill=tk.BOTH, expand=1)
+
+    # Call the populate_main_window function, which will add
+    # labels, text entry boxes, and buttons to the main window.
+    populate_main_window(frm_main)
+
+    # Start the tkinter loop that processes user events
+    # such as key presses and mouse button clicks.
+    root.mainloop()
+
+def createDB():
+    try:
+        con = sql.connect('pin_your_note.db')
+        con.commit()
+        con.close()
+    except:
+        print("Connected to table of database")
+
+def create_table():    
+    try:
+        con = sql.connect('pin_your_note.db')
+        cur = con.cursor()
+        cur.execute('''CREATE TABLE notes_table
                         (date DATETIME, notes_title text, notes text)''')
-except:
-       print("Connected to table of database")
+        con.commit()
+        con.close()
+    except:
+        print("Connected to table of database")
 
+def populate_main_window(frm_main):
+    """Populate the main window of this program. In other words, put
+    the labels, text entry boxes, and buttons into the main window.
 
-# Insert a row of data
-def add_notes():
-       #Get input values
-       today = date.today()
-       #.strftime("%d-%m-%Y %H:%M:%S")
-       notes_title = notes_title_entry.get()
-       notes = notes_entry.get("1.0", "end-1c")
-       #Raise a prompt for missing values
-       if (len(notes_title)<=0) & (len(notes)<=1):
-               messagebox.showerror(message = "ENTER REQUIRED DETAILS" )
-       else:
-       #Insert into the table
-               cur.execute("INSERT INTO notes_table VALUES ('%s','%s','%s')" %(today, notes_title, notes))
-               messagebox.showinfo(message="Note added")
-       #Commit to preserve the changes
-               con.commit()
+    Parameter
+        frm_main: the main frame (window)
+    Return: nothing
+    """
+                    
+    # Create the Add Notes widgets.
+    lbl_notes_title = tk.Label(frm_main, text="Notes title:")
+    lbl_notes = tk.Label(frm_main, text="Notes:")    
+    ent_notes_title = tk.Entry(frm_main, width=50)
+    ent_notes = tk.Text(frm_main, width=38, height=5)
+    btn_add_notes = tk.Button(frm_main, text="Add Notes")
+    btn_view_notes = tk.Button(frm_main, text="View Notes")
+    btn_delete_notes = tk.Button(frm_main, text="Delete Notes")
+    btn_update_notes = tk.Button(frm_main, text="Update Notes")
+    btn_add = tk.Button(frm_main, text="Add")
+    btn_cancel = tk.Button(frm_main, text="Cancel")    
+    
+    # Display the below buttons in the grid.
+    btn_add_notes.grid(row=0, column=0, padx=3, pady=3, sticky='W')
+    btn_view_notes.grid(row=0, column=1, padx=3, pady=3, sticky='W')
+    btn_delete_notes.grid(row=0, column=2, padx=3, pady=3, sticky='W')
+    btn_update_notes.grid(row=0, column=3, padx=3, pady=3, sticky='W')                
 
+    # Creating a function for removing widgets from the grid
+    def remove_add_note_widgets():
+        """Remove a given widget."""
+        lbl_notes_title.grid_remove()
+        ent_notes_title.grid_remove()
+        lbl_notes.grid_remove()
+        ent_notes.grid_remove()
+        btn_add.grid_remove()
+        btn_cancel.grid_remove()
 
-#Display all the notes
-def view_notes():
-       #Obtain all the user input
-       notes_title = notes_title_entry.get()
-       #If no input is given, retrieve all notes
-       if (len(notes_title)<=0):
-               sql_statement = "SELECT * FROM notes_table"
-              
-       #Retrieve notes matching a title
-       elif (len(date) <=0) & (len(notes_title)>0):
-               sql_statement = "SELECT * FROM notes_table where notes_title ='%s'" %notes_title
-       #Retrieve notes matching a date
-       elif (len(date) >0) & (len(notes_title)<=0):
-               sql_statement = "SELECT * FROM notes_table where date ='%s'"%date
-       #Retrieve notes matching the date and title
-       else:
-               sql_statement = "SELECT * FROM notes_table where date ='%s' and notes_title ='%s'" %(date, notes_title)
-              
-       #Execute the query
-       cur.execute(sql_statement)
-       #Obtain all the contents of the query
-       row = cur.fetchall()
-       #Check if none was retrieved
-       if len(row)<=0:
-               messagebox.showerror(message="No note found")
-       else:
-               #Print the notes
-               for i in row:
-                       messagebox.showinfo(message="Date: "+i[0]+"\nTitle: "+i[1]+"\nNotes: "+i[2])
+    # Creating a function for making all add note widgets visible
+    def display_add_note_widgets(lbl_notes_title, 
+                                 ent_notes_title, 
+                                 lbl_notes, 
+                                 ent_notes,
+                                 btn_add,
+                                 btn_cancel):
+        lbl_notes_title.grid(row=1, column=0, padx=3, pady=3, sticky='W') 
+        ent_notes_title.grid(row=2, column=0, columnspan=4, padx=3, pady=3, sticky='W')
+        lbl_notes.grid(row=3, column=0, columnspan=4, padx=3, pady=3, sticky='W')
+        ent_notes.grid(row=4, column=0, columnspan=4, padx=3, pady=3, sticky='W')
+        btn_add.grid(row=5, column=0, padx=3, pady=3, sticky="W")
+        btn_cancel.grid(row=5, column=3, padx=3, pady=3, sticky="E")
 
+    def clear_note_entries():
+        """Clear all entries."""
+        ent_notes_title.delete(0, 'end')
+        ent_notes.delete('1.0', 'end')
+        ent_notes_title.focus()    
 
-#Delete the notes
-def delete_notes():
-       #Obtain input values
-       notes_title = notes_title_entry.get()
-       #Ask if user wants to delete all notes
-       choice = messagebox.askquestion(message="Do you want to delete all notes?")
-       #If yes is selected, delete all
-       if choice == 'yes':
-               sql_statement = "DELETE FROM notes_table" 
-       else:
-       #Delete notes matching a particular date and title
-               if (len(notes_title)<=0): 
-                       #Raise error for no inputs
-                       messagebox.showerror(message = "ENTER REQUIRED DETAILS" )
-                       return
-               else:
-                      sql_statement = "DELETE FROM notes_table where date ='%s' and notes_title ='%s'" %(date, notes_title)
-       #Execute the query
-       cur.execute(sql_statement)
-       messagebox.showinfo(message="Note(s) Deleted")
-       con.commit()
+    def add_notes():
+        con = sql.connect('pin_your_note.db')
+        cur = con.cursor()
 
+        #Get input values
+        today = date.today()       
+        notes_title = ent_notes_title.get()
+        notes = ent_notes.get("1.0", "end-1c")
+        #Raise a prompt for missing values
+        if (len(notes_title)<=0) & (len(notes)<=1):
+            messagebox.showerror(message = "ENTER REQUIRED DETAILS" )
+        else:            
+            clear_note_entries()
+            #Insert into the table
+            cur.execute("INSERT INTO notes_table VALUES ('%s','%s','%s')" %(today, notes_title, notes))
+            messagebox.showinfo(message="Note added")            
+            #Commit to preserve the changes
+            con.commit()    
 
-#Update the notes
-def update_notes():
-       #Obtain user input
-       notes_title = notes_title_entry.get()
-       notes = notes_entry.get("1.0", "end-1c")
-       #Check if input is given by the user
-       if (len(notes_title)<=0) & (len(notes)<=1):
-               messagebox.showerror(message = "ENTER REQUIRED DETAILS" )
-       #update the note
-       else:
-               sql_statement = "UPDATE notes_table SET notes = '%s' where date ='%s' and notes_title ='%s'" %(notes, today, notes_title)
-              
-       cur.execute(sql_statement)
-       messagebox.showinfo(message="Note Updated")
-       con.commit()
+    # Display all widges related to Add Notes when Add Notes button is clicked.
+    btn_add_notes.config(command=lambda: display_add_note_widgets(
+                                            lbl_notes_title, 
+                                            ent_notes_title,
+                                            lbl_notes, 
+                                            ent_notes,
+                                            btn_add,
+                                            btn_cancel))
+    
+    btn_add.config(command=lambda: add_notes())
 
+    btn_cancel.config(command=lambda: remove_add_note_widgets())
 
-#Invoke call to class to view a window
-window = Tk()
-#Set dimensions of window and title
-window.geometry("500x300")
-window.title("Pin Your Note")
-title_label = Label(window, text="Pin Your Note").pack()
-
-#Read inputs
-#Date input
-#date_label = Label(window, text="Date:").place(x=10,y=80)
-#date_entry = Entry(window,  width=20)
-#date_entry.place(x=50,y=80)
-
-#Notes Title input
-notes_title_label = Label(window, text="Notes title:").place(x=10,y=50)
-notes_title_entry = Entry(window,  width=46)
-notes_title_entry.place(x=10,y=70)
-
-#Notes input
-notes_label = Label(window, text="Notes:").place(x=10,y=100)
-notes_entry = Text(window, width=60,height=5)
-notes_entry.place(x=10,y=120)
- 
-#Perform notes functions
-button1 = Button(window,text='Add Notes', bg = 'Turquoise',fg='Red',command=add_notes).place(x=10,y=20)
-button2 = Button(window,text='View Notes', bg = 'Turquoise',fg='Red',command=view_notes).place(x=110,y=20)
-button3 = Button(window,text='Delete Notes', bg = 'Turquoise',fg='Red',command=delete_notes).place(x=210,y=20)
-button4 = Button(window,text='Update Notes', bg = 'Turquoise',fg='Red',command=update_notes).place(x=320,y=20)
- 
-#close the app
-window.mainloop()
-con.close()
+if __name__ == "__main__":
+    main()
