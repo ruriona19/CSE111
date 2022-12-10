@@ -31,7 +31,7 @@ def createDB():
         con.commit()
         con.close()
     except:
-        print("Connected to table of database")
+        print("Database already created")
 
 def create_table():    
     try:
@@ -42,7 +42,7 @@ def create_table():
         con.commit()
         con.close()
     except:
-        print("Connected to table of database")
+        print("Notes table already created")
 
 def populate_main_window(frm_main):
     """Populate the main window of this program. In other words, put
@@ -71,10 +71,12 @@ def populate_main_window(frm_main):
     ent_search_note_title = tk.Entry(frm_main, width=37)
     btn_search = tk.Button(frm_main, text="Search")
 
+    # Create the Update Notes widget
     lbl_enter_note_to_update_title = tk.Label(frm_main, text="Enter note title to update:")
     ent_search_note_to_update_title = tk.Entry(frm_main, width=37)
     btn_search_note_to_update = tk.Button(frm_main, text="Search")
 
+    # Create the Delete Notes widget
     ent_delete_note_title = tk.Entry(frm_main, width=37)
     btn_delete = tk.Button(frm_main, text="Delete")
     btn_delete_all = tk.Button(frm_main, text="Delete All")
@@ -84,11 +86,12 @@ def populate_main_window(frm_main):
     btn_view_notes.grid(row=0, column=1, padx=3, pady=3, sticky='W')
     btn_delete_notes.grid(row=0, column=2, padx=3, pady=3, sticky='W')
     btn_update_notes.grid(row=0, column=3, padx=3, pady=3, sticky='W')                
-
-
-    # Creating a function for removing widgets from the grid
+    
     def remove_add_note_widgets():
-        """Remove a given widget."""
+        """
+        Remove all the widgets related to Add Notes feature.        
+        Return: nothing
+        """ 
         lbl_notes_title.grid_remove()
         ent_notes_title.grid_remove()
         lbl_notes.grid_remove()
@@ -100,21 +103,49 @@ def populate_main_window(frm_main):
         ent_search_note_to_update_title.grid_remove()
         btn_search_note_to_update.grid_remove()
 
-    def remove_search_widgets():        
+    def remove_search_widgets():
+        """
+        Remove all the widgets related to Search Notes feature.        
+        Return: nothing
+        """ 
         lbl_enter_note_title.grid_remove()
         ent_search_note_title.grid_remove()
         btn_search.grid_remove()   
 
     def remove_delete_widgets():
+        """
+        Remove all the widgets related to Delete Notes feature.        
+        Return: nothing
+        """ 
         lbl_enter_note_title.grid_remove()
         ent_delete_note_title.grid_remove()
         btn_delete.grid_remove()
         btn_delete_all.grid_remove()
 
-    # Creating a function for making all add note widgets visible
+    def remove_update_widgets():
+        """
+        Remove all the widges related to Update Notes feature.        
+        Return: nothing
+        """ 
+        lbl_enter_note_to_update_title.grid_remove()
+        ent_search_note_to_update_title.grid_remove()
+        btn_search_note_to_update.grid_remove()
+        btn_update.grid_remove()
+    
+    def clear_note_entries():
+        """Clear all entries."""
+        ent_notes_title.delete(0, 'end')
+        ent_notes.delete('1.0', 'end')
+        ent_notes_title.focus()
+
     def display_add_note_widgets():
+        """
+        Make all the widges related to Add Notes feature visible.        
+        Return: nothing
+        """ 
         remove_search_widgets()
         remove_delete_widgets()
+        remove_update_widgets()
         lbl_notes_title.grid(row=1, column=0, padx=3, pady=3, sticky='W') 
         ent_notes_title.grid(row=2, column=0, columnspan=4, padx=3, pady=3, sticky='W')
         lbl_notes.grid(row=3, column=0, columnspan=4, padx=3, pady=3, sticky='W')
@@ -123,28 +154,34 @@ def populate_main_window(frm_main):
         btn_cancel.grid(row=5, column=3, padx=3, pady=3, sticky="E")
     
     def display_search_widgets():
+        """
+        Make all the widges related to Search Notes feature visible.        
+        Return: nothing
+        """ 
         remove_delete_widgets()
         lbl_enter_note_title.grid(row=1, column=0, columnspan=2, padx=3, pady=3, sticky='W')
         ent_search_note_title.grid(row=2, column=0, columnspan=3, padx=3, pady=3, sticky='W')
         btn_search.grid(row=2, column=3, padx=3, pady=3, sticky='W')        
-
-    def clear_note_entries():
-        """Clear all entries."""
-        ent_notes_title.delete(0, 'end')
-        ent_notes.delete('1.0', 'end')
-        ent_notes_title.focus()    
-
+        
     def display_delete_note_widgets():
-        remove_search_widgets()        
+        """
+        Make all the widges related to Delete Notes feature visible.        
+        Return: nothing
+        """ 
+        remove_search_widgets()
+        remove_add_note_widgets()
         lbl_enter_note_title.grid(row=1, column=0, columnspan=2, padx=3, pady=3, sticky='W')
         ent_delete_note_title.grid(row=2, column=0, columnspan=3, padx=3, pady=3, sticky='W')        
         btn_delete.grid(row=2, column=3, padx=3, pady=3, sticky='E')
         btn_delete_all.grid(row=2, column=4, padx=3, pady=3, sticky='E')
     
     def display_update_note_widgets():
+        """
+        Make all the widges related to Update Notes feature visible.        
+        Return: nothing
+        """ 
         remove_search_widgets()
         remove_delete_widgets()        
-
         lbl_enter_note_to_update_title.grid(row=1, column=0, columnspan=2, padx=3, pady=3, sticky='W')
         ent_search_note_to_update_title.grid(row=2, column=0, columnspan=3, padx=3, pady=3, sticky='W')
         btn_search_note_to_update.grid(row=2, column=3, padx=3, pady=3, sticky='W')
@@ -156,16 +193,20 @@ def populate_main_window(frm_main):
         btn_update.grid(row=7, column=0, padx=3, pady=3, sticky="W")
         btn_cancel.grid(row=7, column=3, padx=3, pady=3, sticky="E")
 
-    def display_view_notes_widgets():        
+    def display_view_notes_widgets():
+        """
+        Make all the widges related to View Notes feature visible.        
+        Return: nothing
+        """ 
         remove_add_note_widgets()
-        display_search_widgets()
-
-    def display_delete_notes_widgets():        
-        remove_add_note_widgets()
-        display_delete_note_widgets()
+        display_search_widgets()    
 
 
     def add_notes():
+        """
+        Retrieve the data from Add Notes entries and save it to the DB        
+        Return: nothing
+        """ 
         con = sql.connect('pin_your_note.db')
         cur = con.cursor()
 
@@ -181,11 +222,14 @@ def populate_main_window(frm_main):
             #Insert into the table
             cur.execute("INSERT INTO notes_table VALUES ('%s','%s','%s')" %(today, notes_title, notes))
             messagebox.showinfo(message="Note added")            
-            #Commit to preserve the changes
-            con.commit()
-
-    #Delete the notes
+        #Commit to preserve the changes
+        con.commit()
+    
     def delete_note():
+        """
+        Retrieve the data from Delete Notes entries and delete it from DB        
+        Return: nothing
+        """ 
         con = sql.connect('pin_your_note.db')
         cur = con.cursor()
 
@@ -198,6 +242,7 @@ def populate_main_window(frm_main):
             return
         else:
             sql_statement = "DELETE FROM notes_table where notes_title ='%s'" %(notes_title)
+            ent_delete_note_title.delete(0, 'end')
         
         #Execute the query
         cur.execute(sql_statement)
@@ -205,6 +250,10 @@ def populate_main_window(frm_main):
         con.commit()
 
     def delete_all_notes():
+        """
+        Delete all notes from DB
+        Return: nothing
+        """ 
         con = sql.connect('pin_your_note.db')
         cur = con.cursor()
 
@@ -220,6 +269,10 @@ def populate_main_window(frm_main):
         con.commit()
 
     def search_notes():
+        """
+        Delete all notes from DB
+        Return: nothing
+        """ 
         con = sql.connect('pin_your_note.db')
         cur = con.cursor()
 
@@ -244,7 +297,6 @@ def populate_main_window(frm_main):
                 messagebox.showinfo(message="Date: "+i[0]+"\nTitle: "+i[1]+"\nNotes: "+i[2])
         cur.execute(sql_statement)
         con.commit()
-        messagebox.showinfo(message="Note Updated")
     
     def search_note_to_update():
         con = sql.connect('pin_your_note.db')
@@ -269,8 +321,7 @@ def populate_main_window(frm_main):
             note_title = row[0][1]
             note = row[0][2]                                    
             ent_notes_title.insert(0, note_title)
-            ent_notes.insert(tk.END, note)
-        
+            ent_notes.insert(tk.END, note)        
         cur.execute(sql_statement)
         con.commit()
             
@@ -278,14 +329,15 @@ def populate_main_window(frm_main):
         con = sql.connect('pin_your_note.db')
         cur = con.cursor()
         today = date.today()
-        notes_title = ent_notes_title.get()
+        note_title_to_update = ent_search_note_to_update_title.get()
+        note_title = ent_notes_title.get()
         notes = ent_notes.get("1.0", "end-1c")
         #Check if input is given by the user
-        if (len(notes_title)<=0) & (len(notes)<=1):
+        if (len(note_title)<=0) & (len(notes)<=1):
             messagebox.showerror(message = "ENTER REQUIRED DETAILS" )
         #update the note
         else:
-            sql_statement = "UPDATE notes_table SET notes = '%s' where date ='%s' and notes_title ='%s'" %(notes,today,notes_title)
+            sql_statement = "UPDATE notes_table SET notes = '%s', date = '%s', notes_title = '%s' where notes_title ='%s'" %(notes,today,note_title,note_title_to_update)
             ent_search_note_to_update_title.delete(0, "end")
             clear_note_entries()
         cur.execute(sql_statement)
@@ -296,7 +348,7 @@ def populate_main_window(frm_main):
     # Display all widges related to Add Notes when Add Notes button is clicked.
     btn_add_notes.config(command=lambda: display_add_note_widgets())
     btn_view_notes.config(command=lambda: display_view_notes_widgets())    
-    btn_delete_notes.config(command=lambda: display_delete_notes_widgets())
+    btn_delete_notes.config(command=lambda: display_delete_note_widgets())
     btn_update_notes.config(command=lambda: display_update_note_widgets())    
 
     btn_add.config(command=lambda: add_notes())
