@@ -201,148 +201,130 @@ def populate_main_window(frm_main):
         remove_add_note_widgets()
         display_search_widgets()    
 
+    def insert_note_to_DB(note_title, note, date):
+        con = sql.connect('pin_your_note.db')
+        cur = con.cursor()
+        cur.execute("INSERT INTO notes_table VALUES ('%s','%s','%s')" %(date, note_title, note))
+        con.commit()
+    
+    def delete_notes_in_DB(note_title = None):
+        con = sql.connect('pin_your_note.db')
+        cur = con.cursor()
+        if note_title is not None:
+            cur.execute("DELETE FROM notes_table where notes_title ='%s'" %(note_title))
+        else:
+            cur.execute("DELETE FROM notes_table")
+        con.commit()
 
+    def get_note_from_DB(note_title):
+        con = sql.connect('pin_your_note.db')
+        cur = con.cursor()
+        cur.execute("SELECT * FROM notes_table where notes_title ='%s'" %note_title)                
+        row = cur.fetchall()
+        return row
+    
+    def update_note_in_DB(note, note_title, note_title_to_update):
+        today = date.today()
+        con = sql.connect('pin_your_note.db')
+        cur = con.cursor()
+        res = cur.execute("UPDATE notes_table SET notes = '%s', date = '%s', notes_title = '%s' where notes_title ='%s'" %(note,today,note_title,note_title_to_update))
+        con.commit()
+        
     def add_notes():
         """
         Retrieve the data from Add Notes entries and save it to the DB        
         Return: nothing
-        """ 
-        con = sql.connect('pin_your_note.db')
-        cur = con.cursor()
-
+        """         
         #Get input values
         today = date.today()       
-        notes_title = ent_notes_title.get()
-        notes = ent_notes.get("1.0", "end-1c")
+        note_title = ent_notes_title.get()
+        note = ent_notes.get("1.0", "end-1c")
         #Raise a prompt for missing values
-        if (len(notes_title)<=0) & (len(notes)<=1):
+        if (len(note_title)<=0) & (len(note)<=1):
             messagebox.showerror(message = "ENTER REQUIRED DETAILS" )
         else:            
             clear_note_entries()
-            #Insert into the table
-            cur.execute("INSERT INTO notes_table VALUES ('%s','%s','%s')" %(today, notes_title, notes))
-            messagebox.showinfo(message="Note added")            
-        #Commit to preserve the changes
-        con.commit()
+            insert_note_to_DB(note_title, note, today)          
+            messagebox.showinfo(message="Note added")                            
     
     def delete_note():
         """
         Retrieve the data from Delete Notes entries and delete it from DB        
         Return: nothing
-        """ 
-        con = sql.connect('pin_your_note.db')
-        cur = con.cursor()
-
+        """         
         #Obtain input values
-        notes_title = ent_delete_note_title.get()
+        note_title = ent_delete_note_title.get()
         
-        if (len(notes_title)<=0): 
+        if (len(note_title)<=0): 
             #Raise error for no inputs
             messagebox.showerror(message = "ENTER REQUIRED DETAILS" )
             return
         else:
-            sql_statement = "DELETE FROM notes_table where notes_title ='%s'" %(notes_title)
+            delete_notes_in_DB(note_title)  
             ent_delete_note_title.delete(0, 'end')
-        
-        #Execute the query
-        cur.execute(sql_statement)
-        messagebox.showinfo(message="Note(s) Deleted")
-        con.commit()
-
+            messagebox.showinfo(message="Note(s) Deleted")        
+                        
     def delete_all_notes():
         """
         Delete all notes from DB
         Return: nothing
-        """ 
-        con = sql.connect('pin_your_note.db')
-        cur = con.cursor()
-
+        """         
         #Ask if user wants to delete all notes
         choice = messagebox.askquestion(message="Do you want to delete all notes?")
         #If yes is selected, delete all
         if choice == 'yes':
-            sql_statement = "DELETE FROM notes_table"         
-        
-        #Execute the query
-        cur.execute(sql_statement)
-        messagebox.showinfo(message="All Notes Deleted")
-        con.commit()
+            delete_notes_in_DB()            
+            messagebox.showinfo(message="All Notes Deleted")            
 
-    def search_notes():
+    def display_note():
         """
         Delete all notes from DB
         Return: nothing
-        """ 
-        con = sql.connect('pin_your_note.db')
-        cur = con.cursor()
-
+        """         
         #Obtain all the user input
-        notes_title = ent_search_note_title.get()
+        note_title = ent_search_note_title.get()
         #If no input is given, retrieve all notes
-        if (len(notes_title)<=0):
+        if (len(note_title)<=0):
             messagebox.showerror(message = "ENTER NOTE TITLE" )              
-        elif (len(notes_title)>0):
-            sql_statement = "SELECT * FROM notes_table where notes_title ='%s'" %notes_title       
-              
-        #Execute the query
-        cur.execute(sql_statement)
-        #Obtain all the contents of the query
-        row = cur.fetchall()
-        #Check if none was retrieved
-        if len(row)<=0:
+        else:
+            note = get_note_from_DB(note_title)
+                             
+        if len(note)<=0:
             messagebox.showerror(message="No note found")
         else:
             #Print the notes
-            for i in row:
-                messagebox.showinfo(message="Date: "+i[0]+"\nTitle: "+i[1]+"\nNotes: "+i[2])
-        cur.execute(sql_statement)
-        con.commit()
+            for i in note:
+                messagebox.showinfo(message="Date: "+i[0]+"\nTitle: "+i[1]+"\nNotes: "+i[2])        
     
-    def search_note_to_update():
-        con = sql.connect('pin_your_note.db')
-        cur = con.cursor()
-
-        #Obtain all the user input
-        notes_title = ent_search_note_to_update_title.get()
+    def search_note_to_update():                
+        note_title = ent_search_note_to_update_title.get()
         #If no input is given, retrieve all notes
-        if (len(notes_title)<=0):
+        if (len(note_title)<=0):
             messagebox.showerror(message = "ENTER NOTE TITLE" )              
-        elif (len(notes_title)>0):
-            sql_statement = "SELECT * FROM notes_table where notes_title ='%s'" %notes_title       
-              
-        #Execute the query
-        cur.execute(sql_statement)
-        #Obtain all the contents of the query
-        row = cur.fetchall()                
-        #Check if none was retrieved
-        if len(row)<=0:
+        elif (len(note_title)>0):
+            note = get_note_from_DB(note_title)
+                              
+        if len(note)<=0:
             messagebox.showerror(message="No note found")
         else:            
-            note_title = row[0][1]
-            note = row[0][2]                                    
+            note_title = note[0][1]
+            note = note[0][2]                                    
             ent_notes_title.insert(0, note_title)
-            ent_notes.insert(tk.END, note)        
-        cur.execute(sql_statement)
-        con.commit()
-            
-    def update_notes():
-        con = sql.connect('pin_your_note.db')
-        cur = con.cursor()
-        today = date.today()
+            ent_notes.insert(tk.END, note)                    
+
+    def update_notes():                
         note_title_to_update = ent_search_note_to_update_title.get()
         note_title = ent_notes_title.get()
-        notes = ent_notes.get("1.0", "end-1c")
+        note = ent_notes.get("1.0", "end-1c")
         #Check if input is given by the user
-        if (len(note_title)<=0) & (len(notes)<=1):
+        if (len(note_title)<=0) & (len(note)<=1):
             messagebox.showerror(message = "ENTER REQUIRED DETAILS" )
         #update the note
         else:
-            sql_statement = "UPDATE notes_table SET notes = '%s', date = '%s', notes_title = '%s' where notes_title ='%s'" %(notes,today,note_title,note_title_to_update)
+            update_note_in_DB(note, note_title, note_title_to_update) 
             ent_search_note_to_update_title.delete(0, "end")
             clear_note_entries()
-        cur.execute(sql_statement)
-        con.commit()
-        messagebox.showinfo(message="Note Updated")
+            messagebox.showinfo(message="Note Updated")        
         
 
     # Display all widges related to Add Notes when Add Notes button is clicked.
@@ -355,7 +337,7 @@ def populate_main_window(frm_main):
 
     btn_cancel.config(command=lambda: remove_add_note_widgets())
 
-    btn_search.config(command=lambda: search_notes())
+    btn_search.config(command=lambda: display_note())
     btn_search_note_to_update.config(command=lambda: search_note_to_update())
     btn_delete.config(command=lambda: delete_note())
 
